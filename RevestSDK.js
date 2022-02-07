@@ -41,7 +41,7 @@ export async function getAllFNFTsForUser(user, provider) {
 
   let response = await subgraphRequest(SUBGRAPH_URL[chainId], eip1155OwnersParams);
 
-  result.accounts[0].balances.forEach(balance => {
+  response.accounts[0].balances.forEach(balance => {
     if(balance.token.registry.id.toLowerCase() === FNFT_HANDLER.toLowerCase() && balance.value != '0') {
       userFNFTs.push(Number(balance.token.identifier));
     } 
