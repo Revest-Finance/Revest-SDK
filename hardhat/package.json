@@ -273,8 +273,10 @@
     "yargs-unparser": "^1.6.0"
   },
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node ./main.js"
   },
+  "type": "module",
   "keywords": [],
   "author": "",
   "license": "ISC"
