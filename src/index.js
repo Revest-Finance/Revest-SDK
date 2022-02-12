@@ -117,7 +117,7 @@ class Revest {
 
     const fnfts = await (
       await fetch(
-        "http://localhost:3000/metadata?id=" + userFNFTs.sort((a, b) => b - a).join(",")
+        "https://api.revest.finance/metadata?id=" + userFNFTs.sort((a, b) => b - a).join(",")
       )
     ).json();
 
