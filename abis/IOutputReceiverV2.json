@@ -1,0 +1,259 @@
+{
+    "_format": "hh-sol-artifact-1",
+    "contractName": "IOutputReceiverV2",
+    "sourceName": "contracts/interfaces/IOutputReceiverV2.sol",
+    "abi": [
+      {
+        "inputs": [],
+        "name": "getAddressRegistry",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          }
+        ],
+        "name": "getAsset",
+        "outputs": [
+          {
+            "internalType": "address",
+            "name": "",
+            "type": "address"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          }
+        ],
+        "name": "getCustomMetadata",
+        "outputs": [
+          {
+            "internalType": "string",
+            "name": "",
+            "type": "string"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          }
+        ],
+        "name": "getOutputDisplayValues",
+        "outputs": [
+          {
+            "internalType": "bytes",
+            "name": "",
+            "type": "bytes"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          }
+        ],
+        "name": "getValue",
+        "outputs": [
+          {
+            "internalType": "uint256",
+            "name": "",
+            "type": "uint256"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address",
+            "name": "asset",
+            "type": "address"
+          },
+          {
+            "internalType": "address payable",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          }
+        ],
+        "name": "receiveRevestOutput",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "address payable",
+            "name": "owner",
+            "type": "address"
+          },
+          {
+            "internalType": "uint256",
+            "name": "quantity",
+            "type": "uint256"
+          },
+          {
+            "components": [
+              {
+                "internalType": "address",
+                "name": "asset",
+                "type": "address"
+              },
+              {
+                "internalType": "address",
+                "name": "pipeToContract",
+                "type": "address"
+              },
+              {
+                "internalType": "uint256",
+                "name": "depositAmount",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "depositMul",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "split",
+                "type": "uint256"
+              },
+              {
+                "internalType": "uint256",
+                "name": "depositStopTime",
+                "type": "uint256"
+              },
+              {
+                "internalType": "bool",
+                "name": "maturityExtension",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "isMulti",
+                "type": "bool"
+              },
+              {
+                "internalType": "bool",
+                "name": "nontransferrable",
+                "type": "bool"
+              }
+            ],
+            "internalType": "struct IRevest.FNFTConfig",
+            "name": "config",
+            "type": "tuple"
+          },
+          {
+            "internalType": "bytes",
+            "name": "args",
+            "type": "bytes"
+          }
+        ],
+        "name": "receiveSecondaryCallback",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "address",
+            "name": "revest",
+            "type": "address"
+          }
+        ],
+        "name": "setAddressRegistry",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "bytes4",
+            "name": "interfaceId",
+            "type": "bytes4"
+          }
+        ],
+        "name": "supportsInterface",
+        "outputs": [
+          {
+            "internalType": "bool",
+            "name": "",
+            "type": "bool"
+          }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+      },
+      {
+        "inputs": [
+          {
+            "internalType": "uint256",
+            "name": "fnftId",
+            "type": "uint256"
+          },
+          {
+            "internalType": "bytes",
+            "name": "args",
+            "type": "bytes"
+          }
+        ],
+        "name": "triggerOutputReceiverUpdate",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+      }
+    ],
+    "bytecode": "0x",
+    "deployedBytecode": "0x",
+    "linkReferences": {},
+    "deployedLinkReferences": {}
+  }
+  

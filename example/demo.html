@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <style>
+        body {
+            background-color: #131313;
+        }
+        #wallet {
+            text-align: center;
+            margin: 0 auto;
+            padding: 10px;
+            font-size: 25px;
+            color:white;
+        }
+        .list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 4rem;
+            justify-content: space-evenly;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 50px;
+            border: 1px solid #343434;
+        }
+
+        .card {
+            -webkit-transform: translateZ(0);
+            -moz-transform: translateZ(0);
+            -ms-transform: translateZ(0);
+            -o-transform: translateZ(0);
+            transform: translateZ(0);
+            position: relative;
+            display: flex;
+            min-width: 18rem !important;
+            min-height: 470px !important;
+            margin: 0;
+            border-radius: 2rem;
+            overflow: hidden;
+            background: none;
+            box-shadow: none;
+            perspective: 150rem;
+            cursor: pointer !important;
+        }
+
+        iframe {
+            border-radius: 2rem;
+            overflow: hidden;
+            pointer-events: none;
+            border: 0px;
+        }
+    </style>
+    <script src="https://cdn.ethers.io/lib/ethers-5.2.umd.min.js" type="application/javascript"></script>
+    <script src="../dist/Revest.umd.js"></script>
+
+    <script>
+        (async function () {
+            const provider = new ethers.providers.Web3Provider(
+                window.ethereum,
+                "any"
+            );
+            await provider.send("eth_requestAccounts", []);
+            const signer = provider.getSigner();
+
+            let userAddress = await signer.getAddress();
+            document.getElementById("wallet").innerText =
+                `Your wallet is: ${userAddress}`;
+            const _revest = await new Revest("list");
+            const _getFNFTs = await _revest
+                .getAllFNFTsForUser(
+                    userAddress,
+                    await provider
+                )
+                .then(async (data) => _revest.renderAllFNFTs(data));
+        })();
+    </script>
+</head>
+
+<body>
+    <div id="wallet"></div>
+    <div id="list" class="list"></div>
+</body>
+
+</html>
