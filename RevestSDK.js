@@ -4,8 +4,42 @@ import addresses from './addresses.js';
 import {abi as RouterABI} from './abis/AddressRegistry.json';
 
 export const SUBGRAPH_URL = {
-  1: 'https://api.thegraph.com/subgraphs/name/alexvorobiov/eip1155subgraph'
+  1: 'https://api.thegraph.com/subgraphs/name/alexvorobiov/eip1155subgraph',
+  250: "https://api.thegraph.com/subgraphs/name/iskdrews/erc1155one",
 };
+
+// Accepts an array of FNFT Ids and returns an array of IDs, sorted from unlocking soonest to unlocking last
+// Excludes any FNFTs that are unlocking after the specified UTC date (in seconds)
+export async function filterFNFTIdListByMaturityDate(fnftIds, upperBoundDate, provider) {
+  const revestABI = 'event FNFTTimeLockMinted(address indexed asset, address indexed from, uint indexed fnftId, uint endTime, uint[] quantities, tuple(address asset, address pipeToContract, uint depositAmount, uint depositMul, uint split, uint depositStopTime, bool maturityExtension, bool isMulti, bool nontransferrable) fnftConfig);'
+  let net = await provider.getNetwork();
+  let chainId = net.chainId;
+
+  const revestRouter = new ethers.Contract(addresses[chainId].ROUTER, RouterABI, provider);
+  let REVEST = await revestRouter.getRevest();
+  const revestContract = new ethers.Contract(REVEST, revestABI, provider);
+
+  let TimeLockEvent = revestContract.filters.TimeLockEvent(null, null, fnftIds);
+
+  TimeLockEvent.fromBlock = addresses[network].MIN_BLOCK
+  TimeLockEvent.toBlock =  "latest";
+
+  let timeLocks = await provider.getLogs(TimeLockEvent);
+  
+  let events = timeLocks.map((log) => revestContract.interface.parseLog(log))
+  
+  let filteredIds = [];
+  // Find minima
+  for( let i in events ) {
+    let args = events[i].args;
+    let localEnd = Number(args.endTime.toString());
+    if(localEnd <= endTime) {
+      filteredIds.push({id:Number(args.fnftId.toString()), endTime: localEnd});
+    }
+  }
+  filteredIds = filteredIds.sort((a, b) => {return a.endTime - b.endTime}).map(item => item.id);
+  return filteredIds
+}
 
 export async function getFNFTsForUserAndContractWithURI(user, contractAddress, provider) {
   const fnftHandlerABI = [
@@ -32,8 +66,6 @@ export async function getFNFTsForUserAndContractWithURI(user, contractAddress, p
 
   allFNFTs.fnfts = fnfts;
   return allFNFTs;
-
-  
 }
 
 export async function getFNFTsForUserAndContract(user, contractAddress, provider) {
