@@ -1,2 +1,7 @@
 .trash
 yarn.lock
+.env
+node_modules
+artifacts
+cache
+package-lock.json
