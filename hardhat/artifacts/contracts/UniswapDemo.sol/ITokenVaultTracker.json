@@ -1,0 +1,42 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "ITokenVaultTracker",
+  "sourceName": "contracts/UniswapDemo.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "token",
+          "type": "address"
+        }
+      ],
+      "name": "tokenTrackers",
+      "outputs": [
+        {
+          "components": [
+            {
+              "internalType": "uint256",
+              "name": "lastBalance",
+              "type": "uint256"
+            },
+            {
+              "internalType": "uint256",
+              "name": "lastMul",
+              "type": "uint256"
+            }
+          ],
+          "internalType": "struct IRevest.TokenTracker",
+          "name": "",
+          "type": "tuple"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x",
+  "deployedBytecode": "0x",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}
