@@ -1,34 +1,46 @@
-import { ADDRESSES, RouterABI, SUBGRAPH_URL } from "./constants";
-import { subgraphRequest, multicall } from "./utils";
-
+import {ADDRESSES, RouterABI, SUBGRAPH_URL} from './constants';
+import {subgraphRequest, multicall, lazyLoad} from './utils';
+/**
+ * 
+ *
+ * @class Revest
+ */
 class Revest {
   constructor(divId) {
     this._divId = divId;
     this.observer;
   }
+  /**
+   * Creating embed for each FNFT and append all of them in the div provided in the constructur
+   *
+   *
+   * @param {object} data
+   * @memberof Revest
+   * @returns promise
+   */
   renderAllFNFTs = async (data) => {
     try {
-      this.lazyLoad();
+      this.observer = await lazyLoad();
       return data.reduce((promises, fnft) => {
-        return promises.then((index) => {
+        return promises.then((_index) => {
           return fetch(fnft.url)
             .then((response) => response.json())
             .then((data) => {
               return fetch(data.animation_url)
                 .then((response) => response.text())
                 .then((_data, index) => {
-                  const div = document.createElement("div");
-                  const iframe = document.createElement("embed");
-                  const blob = new Blob([_data], { type: "text/html" });
-                  div.className = "card";
+                  const div = document.createElement('div');
+                  const iframe = document.createElement('embed');
+                  const blob = new Blob([_data], {type: 'text/html'});
+                  div.className = 'card';
                   iframe.frameborder = 0;
-                  iframe.className = "lazyload";
-                  iframe.width = "300";
-                  iframe.height = "460";
-                  iframe.style.width = "300";
-                  iframe.id = "fnft_" + fnft.id;
-                  iframe.style.height = "460";
-                  iframe.wmode = "transparent";
+                  iframe.className = 'lazyload';
+                  iframe.width = '300';
+                  iframe.height = '460';
+                  iframe.style.width = '300';
+                  iframe.id = 'fnft_' + fnft.id;
+                  iframe.style.height = '460';
+                  iframe.wmode = 'transparent';
                   iframe.dataset.src = window.URL.createObjectURL(blob);
                   div.appendChild(iframe);
                   document.getElementById(this._divId).appendChild(div);
@@ -39,42 +51,24 @@ class Revest {
         });
       }, Promise.resolve(1));
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
-  lazyLoad = async () => {
-    this.observer = new IntersectionObserver(
-      (entries) => {
-        entries
-          .filter((entry) => entry.isIntersecting)
-          .forEach((entry) => {
-            if (!entry.target.childNodes[0].src) {
-              entry.target.childNodes[0].setAttribute(
-                "src",
-                entry.target.childNodes[0].dataset.src
-              );
-              entry.target.childNodes[0].style.zIndex = 999;
-            }
-          });
-      },
-      {
-        root: null,
-        threshold: new Array(101).fill(0).map((zero, index) => index * 0.01),
-      }
-    );
-  };
+
+  /**
+   * Get all FNFT's that belongs to specific wallet
+   *
+   * @param {string} user
+   * @param {object} provider
+   * @param {boolean} _worker
+   * @return {object}
+   */
   getAllFNFTsForUser = async (user, provider, _worker) => {
-    const fnftHandlerABI = [
-      "function uri(uint fnftId) external view returns (string memory)",
-    ];
+    const fnftHandlerABI = ['function uri(uint fnftId) external view returns (string memory)'];
     let net = await provider.getNetwork();
     let chainId = net.chainId;
     const address = [user];
-    const revestRouter = new ethers.Contract(
-      ADDRESSES[chainId].ROUTER,
-      RouterABI.abi,
-      provider
-    );
+    const revestRouter = new ethers.Contract(ADDRESSES[chainId].ROUTER, RouterABI.abi, provider);
     const FNFT_HANDLER = await revestRouter.getRevestFNFT();
 
     let userFNFTs = [];
@@ -98,116 +92,150 @@ class Revest {
         },
       },
     };
-    let response = await subgraphRequest(
-      SUBGRAPH_URL[chainId],
-      eip1155OwnersParams
-    );
+    let response = await subgraphRequest(SUBGRAPH_URL[chainId], eip1155OwnersParams);
     response.accounts[0].balances.forEach((balance) => {
-      if (
-        balance.token.registry.id.toLowerCase() ===
-          FNFT_HANDLER.toLowerCase() &&
-        balance.value != "0"
-      ) {
+      if (balance.token.registry.id.toLowerCase() === FNFT_HANDLER.toLowerCase() && balance.value != '0') {
         userFNFTs.push(Number(balance.token.identifier));
       }
     });
-    if(_worker) {
+    if (_worker) {
       return userFNFTs;
     }
 
     const fnfts = await (
-      await fetch(
-        "https://api.revest.finance/metadata?id=" + userFNFTs.sort((a, b) => b - a).join(",")
-      )
+      await fetch('http://localhost:3000/metadata?id=' + userFNFTs.sort((a, b) => b - a).join(','))
     ).json();
 
     return fnfts;
   };
-  getFNFTsForUserAndContractWithURI = async (
-    user,
-    contractAddress,
-    provider
-  ) => {
+
+  /**
+   * Get FNFT's for specific wallet and contract with URI
+   *
+   * @param {string} user
+   * @param {string} contractAddress
+   * @param {object} provider
+   * @return {object}
+   */
+  getFNFTsForUserAndContractWithURI = async (user, contractAddress, provider) => {
     try {
-      const fnftHandlerABI = [
-        "function uri(uint fnftId) external view returns (string memory)",
-      ];
-  
+      const fnftHandlerABI = ['function uri(uint fnftId) external view returns (string memory)'];
+
       let net = await provider.getNetwork();
       let chainId = net.chainId;
-      let allFNFTs = await getFNFTsForUserAndContract(
-        user,
-        contractAddress,
-        provider
-      );
-  
+      let allFNFTs = await getFNFTsForUserAndContract(user, contractAddress, provider);
+
       let ids = allFNFTsForUser.ids;
-  
+
       let response = await multicall(
         chainId,
         provider,
         fnftHandlerABI,
-        ids.map((id) => [allFNFTs.nftAddress, "uri", [id]])
+        ids.map((id) => [allFNFTs.nftAddress, 'uri', [id]])
       );
-  
+
       let fnfts = {};
       response.forEach((entry, index) => {
-        fnfts[ids[index]] = { uri: entry[0] };
+        fnfts[ids[index]] = {uri: entry[0]};
       });
-  
+
       allFNFTs.fnfts = fnfts;
       return allFNFTs;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
   };
 
+  /**
+   * Get FNFT's for specific wallet and contract
+   *
+   * @param {string} user
+   * @param {string} contractAddress
+   * @param {object} provider
+   * @return {object}
+   */
   getFNFTsForUserAndContract = async (user, contractAddress, provider) => {
     try {
       const tokenVaultABI = [
-        "function getFNFT(uint fnftId) external view returns (tuple(address asset, address pipeToContract, uint depositAmount, uint depositMul, uint split, uint depositStopTime, bool maturityExtension, bool isMulti, bool nontransferrable))",
+        'function getFNFT(uint fnftId) external view returns (tuple(address asset, address pipeToContract, uint depositAmount, uint depositMul, uint split, uint depositStopTime, bool maturityExtension, bool isMulti, bool nontransferrable))',
       ];
       let net = await provider.getNetwork();
       let chainId = net.chainId;
       let allFNFTsForUser = await this.getAllFNFTsForUser(user, provider, true);
       let ids = allFNFTsForUser;
-      const revestRouter = new ethers.Contract(
-        ADDRESSES[chainId].ROUTER,
-        RouterABI.abi,
-        provider
-      );
+      const revestRouter = new ethers.Contract(ADDRESSES[chainId].ROUTER, RouterABI.abi, provider);
       const TOKEN_VAULT = await revestRouter.getTokenVault();
-  
+
       let response = await multicall(
         chainId,
         provider,
         tokenVaultABI,
-        ids.map((id) => [TOKEN_VAULT, "getFNFT", [id]])
+        ids.map((id) => [TOKEN_VAULT, 'getFNFT', [id]])
       );
-  
       let idsForContract = [];
       response.forEach((entry, index) => {
-        if (
-          entry[0].pipeToContract.toLowerCase() == contractAddress.toLowerCase()
-        ) {
+        if (entry[0].pipeToContract.toLowerCase() == contractAddress.toLowerCase()) {
           idsForContract.push(ids[index]);
         }
       });
-  
+
       allFNFTsForUser.ids = idsForContract;
       allFNFTsForUser.contractAddress = contractAddress;
       allFNFTsForUser.vaultAddress = TOKEN_VAULT;
       const fnfts = await (
-        await fetch(
-          "http://localhost:3000/metadata?id=" + allFNFTsForUser.ids.sort((a, b) => b - a).join(",")
-        )
+        await fetch('http://localhost:3000/metadata?id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','))
       ).json();
-  
+
       return fnfts;
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-    
+  };
+
+  /**
+   * Filter list of FNFT's by maturity date.
+   * Accepts an array of FNFT Ids and returns an array of IDs, sorted from unlocking soonest to unlocking last
+   * Excludes any FNFTs that are unlocking after the specified UTC date (in seconds)
+   *
+   * @param {Array} fnftIds
+   * @param {timestamp} upperBoundDate
+   * @param {object} provider
+   * @return {object}
+   */
+  filterFNFTIdListByMaturityDate = async (fnftIds, upperBoundDate, provider) => {
+    const revestABI =
+      'event FNFTTimeLockMinted(address indexed asset, address indexed from, uint indexed fnftId, uint endTime, uint[] quantities, tuple(address asset, address pipeToContract, uint depositAmount, uint depositMul, uint split, uint depositStopTime, bool maturityExtension, bool isMulti, bool nontransferrable) fnftConfig);';
+    let net = await provider.getNetwork();
+    let chainId = net.chainId;
+
+    const revestRouter = new ethers.Contract(ADDRESSES[chainId].ROUTER, RouterABI.abi, provider);
+    let REVEST = await revestRouter.getRevest();
+    const revestContract = new ethers.Contract(REVEST, revestABI, provider);
+
+    let TimeLockEvent = revestContract.filters.TimeLockEvent(null, null, fnftIds);
+
+    TimeLockEvent.fromBlock = ADDRESSES[network].MIN_BLOCK;
+    TimeLockEvent.toBlock = 'latest';
+
+    let timeLocks = await provider.getLogs(TimeLockEvent);
+
+    let events = timeLocks.map((log) => revestContract.interface.parseLog(log));
+
+    let filteredIds = [];
+    // Find minima
+    for (let i in events) {
+      let args = events[i].args;
+      let localEnd = Number(args.endTime.toString());
+      if (localEnd <= upperBoundDate) {
+        filteredIds.push({id: Number(args.fnftId.toString()), endTime: localEnd});
+      }
+    }
+    filteredIds = filteredIds
+      .sort((a, b) => {
+        return a.endTime - b.endTime;
+      })
+      .map((item) => item.id);
+    return filteredIds;
   };
 }
 
