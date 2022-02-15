@@ -33,7 +33,7 @@ export async function filterFNFTIdListByMaturityDate(fnftIds, upperBoundDate, pr
   for( let i in events ) {
     let args = events[i].args;
     let localEnd = Number(args.endTime.toString());
-    if(localEnd <= endTime) {
+    if(localEnd <= upperBoundDate) {
       filteredIds.push({id:Number(args.fnftId.toString()), endTime: localEnd});
     }
   }
