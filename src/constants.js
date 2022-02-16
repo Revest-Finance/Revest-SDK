@@ -1,6 +1,8 @@
 export const SUBGRAPH_URL = {
   1: 'https://api.thegraph.com/subgraphs/name/alexvorobiov/eip1155subgraph',
+  137: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155polygon-subgraphone",
   250: 'https://api.thegraph.com/subgraphs/name/iskdrews/erc1155one',
+  43114: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155avax-one"
 };
 export const ADDRESSES = {
   1: {
