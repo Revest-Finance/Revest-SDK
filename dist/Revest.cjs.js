@@ -97,7 +97,9 @@ function _objectSpread2(target) {
 
 const SUBGRAPH_URL = {
   1: 'https://api.thegraph.com/subgraphs/name/alexvorobiov/eip1155subgraph',
-  250: 'https://api.thegraph.com/subgraphs/name/iskdrews/erc1155one'
+  137: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155polygon-subgraphone",
+  250: 'https://api.thegraph.com/subgraphs/name/iskdrews/erc1155one',
+  43114: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155avax-one"
 };
 const ADDRESSES = {
   1: {
@@ -878,6 +880,12 @@ let lazyLoad = (() => {
   };
 })();
 
+/**
+ * 
+ *
+ * @class Revest
+ */
+
 class Revest {
   constructor(divId) {
     var _this = this;
@@ -885,6 +893,7 @@ class Revest {
     _defineProperty(this, "renderAllFNFTs", (() => {
       var _ref = _asyncToGenerator(function* (data) {
         try {
+          console.log(data);
           _this.observer = yield lazyLoad();
           return data.reduce(function (promises, fnft) {
             return promises.then(function (_index) {
@@ -969,7 +978,7 @@ class Revest {
           return userFNFTs;
         }
 
-        const fnfts = yield (yield fetch('http://localhost:3000/metadata?id=' + userFNFTs.sort(function (a, b) {
+        const fnfts = yield (yield fetch('https://api.revest.finance/metadata?id=' + userFNFTs.sort(function (a, b) {
           return b - a;
         }).join(','))).json();
         return fnfts;
@@ -1028,11 +1037,10 @@ class Revest {
               idsForContract.push(ids[index]);
             }
           });
-          console.log(response);
           allFNFTsForUser.ids = idsForContract;
           allFNFTsForUser.contractAddress = contractAddress;
           allFNFTsForUser.vaultAddress = TOKEN_VAULT;
-          const fnfts = yield (yield fetch('http://localhost:3000/metadata?id=' + allFNFTsForUser.ids.sort(function (a, b) {
+          const fnfts = yield (yield fetch('https://api.revest.finance:3000/metadata?id=' + allFNFTsForUser.ids.sort(function (a, b) {
             return b - a;
           }).join(','))).json();
           return fnfts;

@@ -20,6 +20,7 @@ class Revest {
    */
   renderAllFNFTs = async (data) => {
     try {
+      console.log(data);
       this.observer = await lazyLoad();
       return data.reduce((promises, fnft) => {
         return promises.then((_index) => {
@@ -103,7 +104,7 @@ class Revest {
     }
 
     const fnfts = await (
-      await fetch('http://localhost:3000/metadata?id=' + userFNFTs.sort((a, b) => b - a).join(','))
+      await fetch('https://api.revest.finance/metadata?id=' + userFNFTs.sort((a, b) => b - a).join(','))
     ).json();
 
     return fnfts;
@@ -183,7 +184,7 @@ class Revest {
       allFNFTsForUser.contractAddress = contractAddress;
       allFNFTsForUser.vaultAddress = TOKEN_VAULT;
       const fnfts = await (
-        await fetch('http://localhost:3000/metadata?id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','))
+        await fetch('https://api.revest.finance:3000/metadata?id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','))
       ).json();
 
       return fnfts;
