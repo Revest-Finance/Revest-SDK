@@ -104,7 +104,7 @@ class Revest {
     }
 
     const fnfts = await (
-      await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + userFNFTs.ids.sort((a, b) => b - a).join(','))
+      await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + userFNFTs.ids.sort((a, b) => b - a).join(','), {mode:'cors'})
     ).json();
 
     return fnfts;
@@ -184,7 +184,7 @@ class Revest {
       allFNFTsForUser.contractAddress = contractAddress;
       allFNFTsForUser.vaultAddress = TOKEN_VAULT;
       const fnfts = await (
-        await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','))
+        await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','), {mode:'cors'})
       ).json();
 
       return fnfts;
