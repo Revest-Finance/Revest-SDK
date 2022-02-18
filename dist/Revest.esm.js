@@ -978,7 +978,9 @@ class Revest {
 
         const fnfts = yield (yield fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + userFNFTs.ids.sort(function (a, b) {
           return b - a;
-        }).join(','))).json();
+        }).join(','), {
+          mode: 'cors'
+        })).json();
         return fnfts;
       });
 
@@ -1040,7 +1042,9 @@ class Revest {
           allFNFTsForUser.vaultAddress = TOKEN_VAULT;
           const fnfts = yield (yield fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort(function (a, b) {
             return b - a;
-          }).join(','))).json();
+          }).join(','), {
+            mode: 'cors'
+          })).json();
           return fnfts;
         } catch (error) {
           console.log(error);
