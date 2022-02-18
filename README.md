@@ -19,6 +19,12 @@
 - `npm run lint` - Lints the source code with ESlint.
 - `npm run prepare` - Run both BEFORE the package is packed and published, on local npm install without any arguments, and when installing git dependencies.
 - `npm run clean` - Deletes `dist` and `coverage` folders.
+- `npm run serve` - Activate local server
+
+## Local Server
+- Running `npm run serve` will start a local server where you can find the demo files, located at *http://127.0.0.1:8080/example/getAllFNFTsForUser.html* and *http://127.0.0.1:8080/example/getFNFTsForUserAndContract.html*
+
+
 
 ## Misc
 
