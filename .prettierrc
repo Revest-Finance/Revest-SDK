@@ -1,5 +1,6 @@
 {
-  "bracketSpacing": false,
+  "bracketSpacing": true,
+  "proseWrap": "never",
   "singleQuote": true,
   "jsxBracketSameLine": true,
   "trailingComma": "es5",

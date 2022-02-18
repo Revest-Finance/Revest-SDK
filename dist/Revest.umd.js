@@ -101,15 +101,14 @@
 
   const SUBGRAPH_URL = {
     1: 'https://api.thegraph.com/subgraphs/name/alexvorobiov/eip1155subgraph',
-    137: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155polygon-subgraphone",
+    137: 'https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155polygon-subgraphone',
     250: 'https://api.thegraph.com/subgraphs/name/iskdrews/erc1155one',
-    43114: "https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155avax-one"
+    43114: 'https://thegraph.com/hosted-service/subgraph/iskdrews/erc1155avax-one'
   };
   const ADDRESSES = {
     1: {
       MIN_BLOCK: 9005417,
       ROUTER: '0xD721A90dd7e010c8C5E022cc0100c55aC78E0FC4',
-      PROVIDER: 'https://eth-mainnet.alchemyapi.io/v2/zOVFUzSEld1v_MuTOqGPYkTYttwBUrmF',
       UNISWAP: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
       NFT_LOCKER: '0xc3B4F9fD4CadDc30797818Fd0A38BbF01d9E6000',
       ETHERSCAN_API: 'https://api.etherscan.io',
@@ -118,7 +117,6 @@
     4: {
       MIN_BLOCK: 9005417,
       ROUTER: '0x21744C9A65608645E1b39a4596C39848078C2865',
-      PROVIDER: 'https://eth-rinkeby.alchemyapi.io/v2/srVBZIhy3PWWN1URQfd-KlTJk8q964kr',
       UNISWAP: '0x5C69bEe701ef814a2B6a3EDD4B1652CB9cc5aA6f',
       NFT_LOCKER: '0x1Ce0f18C2df349341D7c223dc0EB09d1DfAa94e2',
       ETHERSCAN_API: 'https://api-rinkeby.etherscan.io',
@@ -127,7 +125,6 @@
     137: {
       MIN_BLOCK: 21525737,
       ROUTER: '0xC03bB46b3BFD42e6a2bf20aD6Fa660e4Bd3736F8',
-      PROVIDER: 'https://polygon-mainnet.g.alchemy.com/v2/XZF2U-6qLByJKH9OVsB8rflwSYaZRQaq',
       UNISWAP: '0x5757371414417b8C6CAad45bAeF941aBc7d3Ab32',
       NFT_LOCKER: '0x74fB7d0dA80CEb606872B33c6BCd3cC458BB43aF',
       ETHERSCAN_API: 'https://api.polygonscan.com',
@@ -136,7 +133,6 @@
     250: {
       MIN_BLOCK: 22917309,
       ROUTER: '0xe0741aE6a8A6D87A68B7b36973d8740704Fd62B9',
-      PROVIDER: 'https://rpc.ftm.tools',
       UNISWAP: '0x152eE697f2E276fA89E96742e9bB9aB1F2E61bE3',
       NFT_LOCKER: '0x07317eD9204C9e76df03f106CeFfD5b021C5f6A5',
       ETHERSCAN_API: 'https://api.FtmScan.com',
@@ -146,7 +142,6 @@
       MIN_BLOCK: 7469820,
       ROUTER: '0x64e12fEA089e52A06A7A76028C809159ba4c1b1a',
       NFT_LOCKER: '0x7f95E5821D0a9FF60Bf6e1D454E980eE34382d62',
-      PROVIDER: 'https://api.avax.network/ext/bc/C/rpc',
       UNISWAP: '0xefa94DE7a4656D787667C749f7E1223D71E9FD88',
       ETHERSCAN_API: 'https://api.snowtrace.io',
       MULTICALL: '0x7E9985aE4C8248fdB07607648406a48C76e9e7eD'
@@ -885,7 +880,7 @@
   })();
 
   /**
-   * 
+   *
    *
    * @class Revest
    */
@@ -897,10 +892,9 @@
       _defineProperty(this, "renderAllFNFTs", (() => {
         var _ref = _asyncToGenerator(function* (data) {
           try {
-            console.log(data);
             _this.observer = yield lazyLoad();
             return data.reduce(function (promises, fnft) {
-              return promises.then(function (_index) {
+              return promises.then(function () {
                 return fetch(fnft.url).then(function (response) {
                   return response.json();
                 }).then(function (data) {
@@ -982,7 +976,7 @@
             return userFNFTs;
           }
 
-          const fnfts = yield (yield fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + userFNFTs.ids.sort(function (a, b) {
+          const fnfts = yield (yield fetch('https://api.revest.finance/metadata?chainId=' + chainId + '&id=' + userFNFTs.sort(function (a, b) {
             return b - a;
           }).join(','), {
             mode: 'cors'
@@ -1001,8 +995,8 @@
             const fnftHandlerABI = ['function uri(uint fnftId) external view returns (string memory)'];
             let net = yield provider.getNetwork();
             let chainId = net.chainId;
-            let allFNFTs = yield getFNFTsForUserAndContract(user, contractAddress, provider);
-            let ids = allFNFTsForUser.ids;
+            let allFNFTs = yield _this.getFNFTsForUserAndContract(user, contractAddress, provider);
+            let ids = allFNFTs.ids;
             let response = yield multicall(chainId, provider, fnftHandlerABI, ids.map(function (id) {
               return [allFNFTs.nftAddress, 'uri', [id]];
             }));
@@ -1046,7 +1040,7 @@
             allFNFTsForUser.ids = idsForContract;
             allFNFTsForUser.contractAddress = contractAddress;
             allFNFTsForUser.vaultAddress = TOKEN_VAULT;
-            const fnfts = yield (yield fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort(function (a, b) {
+            const fnfts = yield (yield fetch('https://api.revest.finance/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort(function (a, b) {
               return b - a;
             }).join(','), {
               mode: 'cors'
@@ -1071,7 +1065,7 @@
           let REVEST = yield revestRouter.getRevest();
           const revestContract = new ethers.Contract(REVEST, revestABI, provider);
           let TimeLockEvent = revestContract.filters.TimeLockEvent(null, null, fnftIds);
-          TimeLockEvent.fromBlock = ADDRESSES[network].MIN_BLOCK;
+          TimeLockEvent.fromBlock = ADDRESSES[chainId].MIN_BLOCK;
           TimeLockEvent.toBlock = 'latest';
           let timeLocks = yield provider.getLogs(TimeLockEvent);
           let events = timeLocks.map(function (log) {

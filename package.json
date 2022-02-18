@@ -12,12 +12,9 @@
   "scripts": {
     "build": "rollup -c --environment BUILD:production",
     "dev": "rollup -c -w",
-    "lint": "eslint src/**/*.js",
-    "test": "jest --config jest.config.js",
-    "test:watch": "npm run test -- --watch",
-    "test:coverage": "npm run test -- --coverage",
+    "lint": "eslint src/**/*.js --no-fix --max-warnings 0",
     "clean": "rimraf dist coverage",
-    "prepare": "npm-run-all clean lint test build",
+    "prepare": "npm-run-all clean lint build",
     "serve": "http-server ./"
   },
   "repository": {
@@ -33,6 +30,7 @@
   "homepage": "https://github.com/Revest-Finance/Revest-SDK#readme",
   "devDependencies": {
     "@babel/core": "~7.12.10",
+    "@babel/eslint-parser": "~7.17.0",
     "@babel/plugin-proposal-object-rest-spread": "~7.12.1",
     "@babel/plugin-transform-runtime": "~7.17.0",
     "@babel/preset-env": "~7.12.11",

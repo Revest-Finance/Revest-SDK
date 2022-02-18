@@ -1,7 +1,7 @@
-import {ADDRESSES, RouterABI, SUBGRAPH_URL} from './constants';
-import {subgraphRequest, multicall, lazyLoad} from './utils';
+import { ADDRESSES, RouterABI, SUBGRAPH_URL } from './constants';
+import { subgraphRequest, multicall, lazyLoad } from './utils';
 /**
- * 
+ *
  *
  * @class Revest
  */
@@ -20,10 +20,9 @@ class Revest {
    */
   renderAllFNFTs = async (data) => {
     try {
-      console.log(data);
       this.observer = await lazyLoad();
       return data.reduce((promises, fnft) => {
-        return promises.then((_index) => {
+        return promises.then(() => {
           return fetch(fnft.url)
             .then((response) => response.json())
             .then((data) => {
@@ -32,7 +31,7 @@ class Revest {
                 .then((_data, index) => {
                   const div = document.createElement('div');
                   const iframe = document.createElement('embed');
-                  const blob = new Blob([_data], {type: 'text/html'});
+                  const blob = new Blob([_data], { type: 'text/html' });
                   div.className = 'card';
                   iframe.frameborder = 0;
                   iframe.className = 'lazyload';
@@ -65,7 +64,6 @@ class Revest {
    * @return {object}
    */
   getAllFNFTsForUser = async (user, provider, _worker) => {
-    const fnftHandlerABI = ['function uri(uint fnftId) external view returns (string memory)'];
     let net = await provider.getNetwork();
     let chainId = net.chainId;
     const address = [user];
@@ -104,7 +102,10 @@ class Revest {
     }
 
     const fnfts = await (
-      await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + userFNFTs.ids.sort((a, b) => b - a).join(','), {mode:'cors'})
+      await fetch(
+        'https://api.revest.finance/metadata?chainId=' + chainId + '&id=' + userFNFTs.sort((a, b) => b - a).join(','),
+        { mode: 'cors' }
+      )
     ).json();
 
     return fnfts;
@@ -124,9 +125,9 @@ class Revest {
 
       let net = await provider.getNetwork();
       let chainId = net.chainId;
-      let allFNFTs = await getFNFTsForUserAndContract(user, contractAddress, provider);
+      let allFNFTs = await this.getFNFTsForUserAndContract(user, contractAddress, provider);
 
-      let ids = allFNFTsForUser.ids;
+      let ids = allFNFTs.ids;
 
       let response = await multicall(
         chainId,
@@ -137,7 +138,7 @@ class Revest {
 
       let fnfts = {};
       response.forEach((entry, index) => {
-        fnfts[ids[index]] = {uri: entry[0]};
+        fnfts[ids[index]] = { uri: entry[0] };
       });
 
       allFNFTs.fnfts = fnfts;
@@ -184,7 +185,13 @@ class Revest {
       allFNFTsForUser.contractAddress = contractAddress;
       allFNFTsForUser.vaultAddress = TOKEN_VAULT;
       const fnfts = await (
-        await fetch('https://api.revest.finance:3000/metadata?chainId=' + chainId + '&id=' + allFNFTsForUser.ids.sort((a, b) => b - a).join(','), {mode:'cors'})
+        await fetch(
+          'https://api.revest.finance/metadata?chainId=' +
+            chainId +
+            '&id=' +
+            allFNFTsForUser.ids.sort((a, b) => b - a).join(','),
+          { mode: 'cors' }
+        )
       ).json();
 
       return fnfts;
@@ -215,7 +222,7 @@ class Revest {
 
     let TimeLockEvent = revestContract.filters.TimeLockEvent(null, null, fnftIds);
 
-    TimeLockEvent.fromBlock = ADDRESSES[network].MIN_BLOCK;
+    TimeLockEvent.fromBlock = ADDRESSES[chainId].MIN_BLOCK;
     TimeLockEvent.toBlock = 'latest';
 
     let timeLocks = await provider.getLogs(TimeLockEvent);
@@ -228,7 +235,7 @@ class Revest {
       let args = events[i].args;
       let localEnd = Number(args.endTime.toString());
       if (localEnd <= upperBoundDate) {
-        filteredIds.push({id: Number(args.fnftId.toString()), endTime: localEnd});
+        filteredIds.push({ id: Number(args.fnftId.toString()), endTime: localEnd });
       }
     }
     filteredIds = filteredIds
