@@ -1,5 +1,5 @@
-import {jsonToGraphQLQuery} from '../node_modules/json-to-graphql-query/lib/jsonToGraphQLQuery';
-import {ADDRESSES} from './constants';
+import { jsonToGraphQLQuery } from '../node_modules/json-to-graphql-query/lib/jsonToGraphQLQuery';
+import { ADDRESSES } from './constants';
 
 export async function subgraphRequest(url, query, options = {}) {
   const res = await fetch(url, {
@@ -9,9 +9,9 @@ export async function subgraphRequest(url, query, options = {}) {
       'Content-Type': 'application/json',
       ...options?.headers,
     },
-    body: JSON.stringify({query: jsonToGraphQLQuery({query})}),
+    body: JSON.stringify({ query: jsonToGraphQLQuery({ query }) }),
   });
-  const {data} = await res.json();
+  const { data } = await res.json();
   return data || {};
 }
 
@@ -65,4 +65,4 @@ export async function lazyLoad() {
       threshold: new Array(101).fill(0).map((zero, index) => index * 0.01),
     }
   );
-};
+}

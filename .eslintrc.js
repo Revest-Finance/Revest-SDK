@@ -2,12 +2,17 @@ module.exports = {
   env: {
     browser: true,
     node: true,
-    jest: true
+    jest: true,
+    es6: true
   },
   parserOptions: {
     ecmaVersion: 9,
     sourceType: 'module',
     allowImportExportEverywhere: true
+  },
+  "parser": "@babel/eslint-parser",
+  "globals": {
+    "ethers": true
   },
   extends: [
     'eslint:recommended'
@@ -38,7 +43,6 @@ module.exports = {
     'no-trailing-spaces': ['warn'],
     'comma-spacing': ['warn'],
     'comma-style': ['warn'],
-    'operator-linebreak': ['warn', 'before'],
     'brace-style': ['warn'],
     'keyword-spacing': ['warn'],
     'object-curly-spacing': ['warn', 'always'],
@@ -50,12 +54,8 @@ module.exports = {
       'asyncArrow': 'always'
     }],
     'padded-blocks': ['warn', 'never'],
-    'comma-dangle': ['warn', 'never'],
     // Best Practices
     'curly': ['warn'],
-    'eqeqeq': ['error', 'always', {
-      'null': 'ignore'
-    }],
     'no-multi-spaces': ['warn', {
       'ignoreEOLComments': true,
       'exceptions': {
