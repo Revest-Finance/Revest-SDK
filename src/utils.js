@@ -4,6 +4,7 @@ import { ADDRESSES } from './constants';
 export async function subgraphRequest(url, query, options = {}) {
   const res = await fetch(url, {
     method: 'POST',
+    mode:'cors',
     headers: {
       Accept: 'application/json',
       'Content-Type': 'application/json',
